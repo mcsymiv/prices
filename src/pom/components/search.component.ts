@@ -4,7 +4,6 @@ interface ISearch extends IComponent {
 }
 
 class Search extends Component implements ISearch {
-
 }
 
 export { Search, ISearch }

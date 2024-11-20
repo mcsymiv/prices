@@ -1,11 +1,11 @@
 import appRootPath from 'app-root-path'
 
-const waitTimeout: number = process.env.timeout ? Number(process.env.timeout) : 20000;
+const waitTimeout: number = process.env.timeout ? Number(process.env.timeout) : 40000;
 
 export const config = {
 
   // testdrive paths
-  baseUrl: 'https://www.atbmarket.com/',
+  baseUrl: 'https://www.atbmarket.com/sch?page=1&lang=uk&query=Coca-Cola',
 
   // timeouts
   timeout: process.env.testTimeout ? Number(process.env.testTimeout) : (1000 * 60),

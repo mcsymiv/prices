@@ -11,7 +11,7 @@ interface INavbar extends IComponent {
 class Navbar extends Component implements INavbar {
 
   get search(): ISearch {
-    return new Search(this.component.locator(''))
+    return new Search(this.component.getByPlaceholder('Я шукаю'))
   }
 
   get logo(): Locator {
