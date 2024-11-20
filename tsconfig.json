@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "baseUrl": ".",
+    "paths": {
+      "@pom/*": ["src/pom/*"],
+      "@components/*": ["src/pom/components/*"],
+      "@lib/*":["src/lib/*"],
+      "@util/*":["src/util/*"],
+    },
+    "esModuleInterop": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*", "setup",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

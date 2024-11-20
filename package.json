@@ -1,0 +1,28 @@
+{
+  "name": "elateral-trust-demo01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "check": "tsc --project tsconfig.json",
+    "test": "playwright test --config playwright.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^22.9.0"
+  },
+  "dependencies": {
+    "allure-playwright": "^3.0.6",
+    "app-root-path": "^3.1.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^11.0.0",
+    "jszip": "^3.10.1",
+    "octokit": "^3.2.1",
+    "playwright-teamcity-reporter": "^1.0.4",
+    "totp-generator": "^1.0.0",
+    "yaml": "^2.6.0"
+  }
+}
