@@ -2,11 +2,14 @@ import test from '@lib/fixture'
 import { expect } from '@playwright/test'
 import { Item } from '@pom/components/item.component'
 import { Price } from 'src/data/prices'
+import pg from 'pg';
 
 let prices: Price[] = []
+const conString = `postgres://${process.env.user}:${process.env.password}@${process.env.host}:${process.env.port}/${process.env.dbname}`
+const client = new pg.Client(conString);
 
 test.beforeAll('', async () => {
-  console.log(prices)
+  await client.connect();
 })
 
 test('Collect prices', async ({ result }) => {
@@ -15,22 +18,26 @@ test('Collect prices', async ({ result }) => {
   const items: Item[] = await result.items()
 
   for (const item of items) {
-    let discount: string | null | undefined = ''
-    const price: string | null = await item.price.textContent()
+    let discounted: string | null | undefined = ''
+    let price: string | null | undefined = ''
     const name: string | null = await item.name.textContent()
 
-    if (await item.discount.isVisible()) {
-      discount = await item.discount.textContent()
+    if (await item.discounted.isVisible()) {
+      price = await item.discounted.textContent()
+    } else {
+      price = await item.price.textContent()
     }
 
     prices.push({
       name,
       price,
-      discount
+      discounted, 
     });
   }
 })
 
 test.afterAll('', async () => {
-  console.log(prices)
+  const query = await client.query("select * from product;");
+  console.log(query.rows);
+  await client.end();
 })

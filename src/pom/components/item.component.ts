@@ -4,7 +4,7 @@ import { Component, IComponent } from '@pom/base.page';
 interface Item extends IComponent {
   name: Locator
   price: Locator
-  discount: Locator 
+  discounted: Locator 
 }
 
 class ItemResult extends Component implements Item {
@@ -17,7 +17,7 @@ class ItemResult extends Component implements Item {
     return this.component.locator('[class="product-price__top"] span').first()
   }
 
-  get discount(): Locator {
+  get discounted(): Locator {
     return this.component.locator('[class="product-price__bottom"] span').first()
   }
 

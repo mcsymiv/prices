@@ -15,9 +15,11 @@
     "@types/node": "^22.9.0"
   },
   "dependencies": {
+    "@types/pg": "^8.11.10",
     "allure-playwright": "^3.0.6",
     "app-root-path": "^3.1.0",
     "fs-extra": "^11.2.0",
+    "pg": "^8.13.1",
     "playwright-teamcity-reporter": "^1.0.4"
   }
 }
