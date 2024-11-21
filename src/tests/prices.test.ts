@@ -1,25 +1,36 @@
 import test from '@lib/fixture'
 import { expect } from '@playwright/test'
 import { Item } from '@pom/components/item.component'
-import { prices } from 'src/data/prices'
+import { Price } from 'src/data/prices'
 
-test('Collect prices', async ({ home, result }) => {
+let prices: Price[] = []
 
-  await home.open()
+test.beforeAll('', async () => {
+  console.log(prices)
+})
+
+test('Collect prices', async ({ result }) => {
+  await result.open()
   await expect(result.header).toBeVisible()
   const items: Item[] = await result.items()
+
   for (const item of items) {
     let discount: string | null | undefined = ''
     const price: string | null = await item.price.textContent()
+    const name: string | null = await item.name.textContent()
+
     if (await item.discount.isVisible()) {
       discount = await item.discount.textContent()
     }
+
     prices.push({
-      name: '',
+      name,
       price,
       discount
     });
   }
+})
 
+test.afterAll('', async () => {
   console.log(prices)
 })
