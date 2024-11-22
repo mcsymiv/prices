@@ -1,7 +1,8 @@
 export type Price = {
-  name: string | null | undefined
-  price: string | null | undefined
-  discounted: string | null | undefined
+  name: string
+  price: number
+  originalPrice: number
+  difference: number
 }
 
 export const prices: Price[] = []

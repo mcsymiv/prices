@@ -1,6 +1,6 @@
 import appRootPath from 'app-root-path'
 
-const waitTimeout: number = process.env.timeout ? Number(process.env.timeout) : 40000;
+const waitTimeout: number = process.env.timeout ? Number(process.env.timeout) : 15000;
 
 export const config = {
 
@@ -8,7 +8,7 @@ export const config = {
   baseUrl: 'https://www.atbmarket.com/sch?page=1&lang=uk&query=Coca-Cola',
 
   // timeouts
-  timeout: process.env.testTimeout ? Number(process.env.testTimeout) : (1000 * 60),
+  timeout: process.env.testTimeout ? Number(process.env.testTimeout) : (1000 * 20),
   waitForElement: waitTimeout,
   waitForDouble: waitTimeout * 2,
   waitForHalf: waitTimeout / 2,

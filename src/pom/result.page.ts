@@ -7,7 +7,7 @@ interface IResult extends IBase {
 
   header: Locator
 
-  items(): Promise<Item[]> 
+  products(): Promise<Item[]> 
 }
 
 class Result extends Base implements IResult {
@@ -16,11 +16,22 @@ class Result extends Base implements IResult {
     return this.page.getByRole('heading', { name: 'Пошук: Coca-Cola' })
   }
 
-  async items(): Promise<Item[]> {
+  async products(): Promise<Item[]> {
     const items: Item[] = []
-    const resultBlock: Locator[] = await this.page.locator('article[class*="catalog-item"]').all()
-    for (const item of resultBlock) {
-      items.push(new ItemResult(item))
+    const itemNames: string[] = [
+      'Напій 2 л Coca-Cola безалкoгoльний сильнoгазoваний',
+      'Напій 1 л Coca-Cola безалкoгoльний сильнoгазoваний',
+      'Напій 0,5 л Coca-Cola безалкoгoльний сильнoгазoваний',
+      'Напій 250 мл Coca-Cola безалкогольний сильногазований ',
+      'Нaпій 1 л Coca-Cola Zero бeзaлкoгoльний сильнoгaзoвaний ПЕТ',
+      'Нaпій 2л Coca-Cola Zero бeзaлкoгoльний сильнoгaзoвaний ПЕТ',
+      'Напій 0,5 л Coca-Cola Zero безалкoгoльний сильнoгазoваний',
+      'Напій 250 мл Coca Cola plus coffee безалкогольний сильногазований',
+    ]
+
+    for (const item of itemNames) {
+      const product: Locator = this.page.locator('[class*="catalog-item"]').filter({ hasText: item })
+      items.push(new ItemResult(item, product))
     }
 
     return items

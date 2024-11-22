@@ -2,22 +2,28 @@ import { Locator } from '@playwright/test';
 import { Component, IComponent } from '@pom/base.page';
 
 interface Item extends IComponent {
-  name: Locator
+  name: string 
   price: Locator
-  discounted: Locator 
+  originalPrice: Locator 
 }
 
 class ItemResult extends Component implements Item {
+  _name: string
 
-  get name(): Locator {
-    return this.component.locator('[class*="catalog-item__title"]')
+  constructor(name: string, comp: Locator) {
+    super(comp)
+    this._name = name
+  }
+
+  get name(): string {
+    return this._name;
   }
 
   get price(): Locator {
     return this.component.locator('[class="product-price__top"] span').first()
   }
 
-  get discounted(): Locator {
+  get originalPrice(): Locator {
     return this.component.locator('[class="product-price__bottom"] span').first()
   }
 
