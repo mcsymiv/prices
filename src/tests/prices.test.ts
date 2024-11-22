@@ -20,7 +20,7 @@ test('Collect prices', async ({ result }) => {
 
   for (const item of items) {
     let difference: number = 0
-    let originalPrice: number = 0
+    let original: number = 0
     let price: number = 0
 
     const priceRaw: string | null = await item.price.textContent()
@@ -28,17 +28,17 @@ test('Collect prices', async ({ result }) => {
       price = parseFloat(priceRaw)
     }
 
-    if (await item.originalPrice.isVisible()) {
-      const originalPriceRaw: string | null = await item.originalPrice.textContent()
+    if (await item.original.isVisible()) {
+      const originalPriceRaw: string | null = await item.original.textContent()
       if (originalPriceRaw) {
-        originalPrice = parseFloat(originalPriceRaw)
+        original = parseFloat(originalPriceRaw)
       }
     }
 
     prices.push({
       name: item.name,
       price,
-      originalPrice,
+      original,
       difference, 
     });
   }
@@ -51,14 +51,14 @@ test.afterAll('', async ({}, testInfo) => {
     const query = await client.query(`select * from ${process.env.POSTGRES_DB_NAME}`)
     console.log(query.rows);
 
-    if (false) {
+    if (true) {
       // compare prices
 
       // write new if changed
       await client.query(
         `
-        insert into ${process.env.POSTGRES_DB_NAME} (name, price, original_price, difference)
-        select name, price, original_price, difference from json_populate_recordset(null::prices, '${[JSON.stringify(prices)]}'); 
+        insert into ${process.env.POSTGRES_DB_NAME} (name, price, original, difference)
+        select name, price, original, difference from json_populate_recordset(null::prices, '${[JSON.stringify(prices)]}'); 
         `,
       );
     }

@@ -1,7 +1,7 @@
 export type Price = {
   name: string
   price: number
-  originalPrice: number
+  original: number
   difference: number
 }
 
