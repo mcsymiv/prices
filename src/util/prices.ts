@@ -1,17 +1,45 @@
-export function calculateDiff(
-  price: string | null | undefined,
-  originalPrice: string | null | undefined
-): string {
+import { Price } from "src/data/prices"
 
+export function calculateDiff(
+  price: number,
+  originalPrice: number
+): number {
   let diff: number = 0
 
   if (price && originalPrice) {
-    const p = parseFloat(price)
-    const o = parseFloat(originalPrice)
-
-    diff = (p / o) - 1
+    if (originalPrice === 0) return 0
+    diff = (price / originalPrice) - 1
   }
 
-  return diff.toFixed(2).toString()
+  return parseFloat(diff.toFixed(2))
 }
 
+export function comparePrices(prev: Price[], next: Price[]): Price[] {
+  let updatedPrices: Price[] = []
+
+  let oldPrices: { [key:string]: Price } = {}
+  let newPrices: { [key:string]: Price } = {}
+
+  for (const item of prev) {
+    oldPrices[item.name] = { name: item.name, price: +item.price, original: +item.original } // postgres decimals return as strings
+  }
+
+  for (const item of next) {
+    newPrices[item.name] = { name: item.name, price: item.price, original: item.original }
+  }
+
+  // compare prices
+  for (const name in oldPrices) {
+    const p: Price = newPrices[name]
+    // either price changed, or no more discount
+    if (oldPrices[name].price !== newPrices[name].price) {
+      p.difference = calculateDiff(newPrices[name].price, newPrices[name].original)
+      p.changed = true
+      updatedPrices.push(p)
+    } else {
+      updatedPrices.push(p)
+    }
+  }
+
+  return updatedPrices
+}
