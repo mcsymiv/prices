@@ -66,7 +66,7 @@ export default defineConfig({
     {
       name: 'prices',
       testDir: config.testDir,
-      testMatch: `prices*.ts`,
+      testMatch: `*.ts`,
       use: { 
         ...devices['Desktop Chrome'], 
         channel: 'chrome',
@@ -75,7 +75,6 @@ export default defineConfig({
         screenshot: 'only-on-failure',
         acceptDownloads: true,
       },
-      grep: /prices/,
       dependencies: ['qsetup', 'qlogin']
     },
 

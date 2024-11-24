@@ -1,11 +1,19 @@
-export type Price = {
+export type Item = {
   name: string
-  price: number
-  previous: number
-  original: number
-  prevDifference?: number
-  difference?: number
+  regular: number
+  promo: number
   changed?: boolean
+  difference?: number
 }
 
-export const prices: Price[] = []
+export type PromoPrice = {
+  previousPrice: number
+  promoPrice: number
+  lastUpdated: string
+}
+
+export type RegularPrice = {
+  previousPrice: number
+  regularPrice: number
+  lastUpdated: string
+}

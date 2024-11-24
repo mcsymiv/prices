@@ -1,13 +1,14 @@
 import { Locator } from '@playwright/test';
 import { Component, IComponent } from '@pom/base.page';
 
-interface Item extends IComponent {
+interface IProduct extends IComponent {
   name: string 
+  sale: Locator
   price: Locator
   original: Locator 
 }
 
-class ItemResult extends Component implements Item {
+class Product extends Component implements IProduct {
   _name: string
 
   constructor(name: string, comp: Locator) {
@@ -17,6 +18,10 @@ class ItemResult extends Component implements Item {
 
   get name(): string {
     return this._name;
+  }
+
+  get sale(): Locator {
+    return this.component.locator('[class*="product-price--sale"] span').first()
   }
 
   get price(): Locator {
@@ -29,4 +34,4 @@ class ItemResult extends Component implements Item {
 
 }
 
-export { Item, ItemResult }
+export { Product, IProduct }

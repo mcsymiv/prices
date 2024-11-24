@@ -1,13 +1,13 @@
 import 'dotenv/config'
 import test from '@lib/fixture'
 import { expect } from '@playwright/test'
-import { Item } from '@pom/components/item.component'
-import { Price } from 'src/data/prices'
+import { IProduct } from '@pom/components/item.component'
+import { Item } from 'src/data/prices'
 import pg from 'pg';
-import { calculateDiff, comparePrices } from '@util/prices'
+import { comparePrices } from '@util/prices'
 
-let collected: Price[] = []
-let saved: Price[] = []
+let collected: Item[] = []
+let saved: Item[] = []
 
 const conString = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB_NAME}`
 const client = new pg.Client(conString);
@@ -19,31 +19,34 @@ test.beforeAll('connect to db', async () => {
 test('prices', async ({ result }) => {
   await result.open()
   await expect(result.header).toBeVisible()
-  const items: Item[] = await result.products()
+  const products: IProduct[] = await result.products()
 
-  for (const item of items) {
-    let original: number = 0
-    let price: number = 0
-    let previous: number = 0
+  for (const product of products) {
+    let regular: number = 0
+    let promo: number = 0
 
-    const priceRaw: string | null = await item.price.textContent()
-    if (priceRaw) {
-      price = parseFloat(priceRaw)
-    }
+    if (await product.sale.isVisible()) {
+      const priceRaw: string | null = await product.price.textContent()
+      if (priceRaw) {
+        promo = parseFloat(priceRaw)
+      }
 
-    if (await item.original.isVisible()) {
-      const originalPriceRaw: string | null = await item.original.textContent()
+      const originalPriceRaw: string | null = await product.original.textContent()
       if (originalPriceRaw) {
-        original = parseFloat(originalPriceRaw)
+        regular = parseFloat(originalPriceRaw) 
+      }
+      
+    } else {
+      const priceRaw: string | null = await product.price.textContent()
+      if (priceRaw) {
+        regular = parseFloat(priceRaw)
       }
     }
 
     collected.push({
-      name: item.name,
-      previous,
-      price,
-      original,
-      difference: calculateDiff(price, original),
+      name: product.name,
+      regular,
+      promo,
     })
   }
 
@@ -56,27 +59,29 @@ test('prices', async ({ result }) => {
     // write new
     await client.query(
       `
-      insert into ${process.env.POSTGRES_DB_NAME} (name, previous, price, original, difference)
-      select name, previous, price, original, difference from json_populate_recordset(null::prices, '${[JSON.stringify(collected)]}'); 
+      insert into ${process.env.POSTGRES_DB_NAME} (name, regular, promo)
+      select name, regular, promo from json_populate_recordset(null::prices, '${[JSON.stringify(collected)]}'); 
       `,
     );
 
   } else {
 
-    const newPrices: Price[] = comparePrices(saved, collected)
+    const newPrices: Item[] = await comparePrices(saved, collected)
 
     for (const item of newPrices) {
       if (item.changed) {
         await client.query(
           `
-          update ${process.env.POSTGRES_DB_NAME} set previous = $1, price = $2, original = $3, difference = $4, prevDifference = $5 where name = $6; 
+          update ${process.env.POSTGRES_DB_NAME} set regular = $1, promo = $2 where name = $3; 
           `,
-          [item.previous, item.price, item.original, item.difference, item.prevDifference, item.name]
+          [item.regular, item.promo, item.name]
         );
+
       }
     }
 
   }
+
 })
 
 test.afterAll('close db', async () => {

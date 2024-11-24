@@ -1,13 +1,13 @@
 import { Locator, Page } from '@playwright/test';
 import { Base, IBase } from '@pom/base.page';
-import { Item, ItemResult } from '@components/item.component';
+import { IProduct, Product } from '@components/item.component';
 
 interface IResult extends IBase {
   page: Page
 
   header: Locator
 
-  products(): Promise<Item[]> 
+  products(): Promise<IProduct[]> 
 }
 
 class Result extends Base implements IResult {
@@ -16,8 +16,8 @@ class Result extends Base implements IResult {
     return this.page.getByRole('heading', { name: 'Пошук: Coca-Cola' })
   }
 
-  async products(): Promise<Item[]> {
-    const items: Item[] = []
+  async products(): Promise<IProduct[]> {
+    const items: Product[] = []
     const itemNames: string[] = [
       'Напій 2 л Coca-Cola безалкoгoльний сильнoгазoваний',
       'Напій 1 л Coca-Cola безалкoгoльний сильнoгазoваний',
@@ -31,7 +31,7 @@ class Result extends Base implements IResult {
 
     for (const item of itemNames) {
       const product: Locator = this.page.locator('[class*="catalog-item"]').filter({ hasText: item })
-      items.push(new ItemResult(item, product))
+      items.push(new Product(item, product))
     }
 
     return items
