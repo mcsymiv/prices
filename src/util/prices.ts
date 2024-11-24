@@ -21,11 +21,11 @@ export function comparePrices(prev: Price[], next: Price[]): Price[] {
   let newPrices: { [key:string]: Price } = {}
 
   for (const item of prev) {
-    oldPrices[item.name] = { name: item.name, price: +item.price, original: +item.original } // postgres decimals return as strings
+    oldPrices[item.name] = { name: item.name, previous: +item.previous, price: +item.price, original: +item.original } // postgres decimals return as strings
   }
 
   for (const item of next) {
-    newPrices[item.name] = { name: item.name, price: item.price, original: item.original }
+    newPrices[item.name] = { name: item.name, previous: +item.previous, price: item.price, original: item.original }
   }
 
   // compare prices
@@ -34,7 +34,10 @@ export function comparePrices(prev: Price[], next: Price[]): Price[] {
     // either price changed, or no more discount
     if (oldPrices[name].price !== newPrices[name].price) {
       p.difference = calculateDiff(newPrices[name].price, newPrices[name].original)
+      p.prevDifference = calculateDiff(oldPrices[name].price, newPrices[name].price)
+      p.previous = oldPrices[name].price
       p.changed = true
+
       updatedPrices.push(p)
     } else {
       updatedPrices.push(p)

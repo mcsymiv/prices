@@ -24,6 +24,7 @@ test('prices', async ({ result }) => {
   for (const item of items) {
     let original: number = 0
     let price: number = 0
+    let previous: number = 0
 
     const priceRaw: string | null = await item.price.textContent()
     if (priceRaw) {
@@ -39,6 +40,7 @@ test('prices', async ({ result }) => {
 
     collected.push({
       name: item.name,
+      previous,
       price,
       original,
       difference: calculateDiff(price, original),
@@ -54,8 +56,8 @@ test('prices', async ({ result }) => {
     // write new
     await client.query(
       `
-      insert into ${process.env.POSTGRES_DB_NAME} (name, price, original, difference, changed)
-      select name, price, original, difference, changed from json_populate_recordset(null::prices, '${[JSON.stringify(collected)]}'); 
+      insert into ${process.env.POSTGRES_DB_NAME} (name, previous, price, original, difference)
+      select name, previous, price, original, difference from json_populate_recordset(null::prices, '${[JSON.stringify(collected)]}'); 
       `,
     );
 
@@ -67,9 +69,9 @@ test('prices', async ({ result }) => {
       if (item.changed) {
         await client.query(
           `
-          update ${process.env.POSTGRES_DB_NAME} set price = $1, original = $2, difference = $3, changed = $4 where name = $5; 
+          update ${process.env.POSTGRES_DB_NAME} set previous = $1, price = $2, original = $3, difference = $4, prevDifference = $5 where name = $6; 
           `,
-          [item.price, item.original, item.difference, item.changed, item.name]
+          [item.previous, item.price, item.original, item.difference, item.prevDifference, item.name]
         );
       }
     }
