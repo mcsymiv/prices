@@ -16,6 +16,7 @@ export default defineConfig({
   forbidOnly: config.forbidOnly,
   retries: config.retries, 
   workers: config.workers, 
+  snapshotPathTemplate: config.images,
 
   reporter: [
     [

@@ -6,6 +6,7 @@ setup('Delete reporting', async ({}) => {
   const paths: string[] = [ 
     config.downloads,
     config.playwrightReport,
+    config.snap
   ];
   for (const dir of paths) {
     await clearDir(dir)

@@ -14,6 +14,8 @@ export const config = {
   waitForHalf: waitTimeout / 2,
   waitTimeoutFactor: 2,
   expectTimeout: waitTimeout,
+  images: `${appRootPath.path}/src/images/{arg}{ext}`, 
+  snap: `${appRootPath.path}/src/images`,
 
   // playwright
   workers: process.env.workers ? Number(process.env.workers) : 5,
