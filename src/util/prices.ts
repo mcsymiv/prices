@@ -42,15 +42,8 @@ export async function comparePrices(prev: Item[], next: Item[]): Promise<Item[]>
   for (const name in oldItems) {
     const item: Item = newItems[name]
 
-    if (oldItems[name].promo === 0 && newItems[name].promo !== 0) {
-      // product is in promo
 
-      const diff: number = calculateDiff(newItems[name].promo, newItems[name].regular)
-      await bot.send(`Продукт "${item.name}" зайшов у промо "${diff}"`)
-      item.changed = true
-      updatedPrices.push(item)
-
-    } else if (oldItems[name].promo === 0 && newItems[name].promo !== 0 && (oldItems[name].regular !== newItems[name].regular)) {
+    if (oldItems[name].promo === 0 && newItems[name].promo !== 0 && (oldItems[name].regular !== newItems[name].regular)) {
       // product is in promo with regular price change
 
       const diff: number = calculateDiff(newItems[name].promo, newItems[name].regular)
@@ -86,6 +79,13 @@ export async function comparePrices(prev: Item[], next: Item[]): Promise<Item[]>
       await bot.send(`Продукт "${item.name}" змінив регулярну ціну на "${diff}". Попередня: ${oldItems[name].regular}. Тепер: ${newItems[name].regular}`)
       item.changed = true
       updatedPrices.push(item)
+    } else if (oldItems[name].promo !== newItems[name].promo) {
+
+      const diff: number = calculateDiff(newItems[name].promo, newItems[name].regular)
+      await bot.send(`Продукт "${item.name}" зайшов у промо "${diff}"`)
+      item.changed = true
+      updatedPrices.push(item)
+
     } else {
 
       updatedPrices.push(item)
