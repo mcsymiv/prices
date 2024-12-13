@@ -82,8 +82,6 @@ test('prices', async ({ result }) => {
 
   }
 
-
-
 })
 
 test.afterAll('close db', async () => {

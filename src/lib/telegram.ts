@@ -13,7 +13,6 @@ class Telegram implements MyBot {
     this.bot = new TelegramBot(process.env.TELEGRAM_BOT_KEY!)
   }
 
-
   send(msg: string): Promise<TelegramBot.Message> {
     const chatId: TelegramBot.ChatId = process.env.TELEGRAM_CHAT_ID!
     const testChatId: TelegramBot.ChatId = process.env.TELEGRAM_CHAT_ID_TEST!
