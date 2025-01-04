@@ -5,7 +5,6 @@ import path from 'path';
 import fs from "node:fs";
 
 teardown('teardown', async ({ page }) => {
-  console.log(`file://${appRootPath.path}/html-report/index.html`)
   await page.goto(`file://${appRootPath.path}/html-report/index.html`)
 
   const imagePath = path.join(appRootPath.path, 'src', 'images', 'report.png')

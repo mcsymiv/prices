@@ -8,6 +8,7 @@
       "@components/*": ["src/pom/components/*"],
       "@lib/*":["src/lib/*"],
       "@util/*":["src/util/*"],
+      "@data/*":["src/data/*"]
     },
     "esModuleInterop": true,
     "strict": true,
@@ -17,7 +18,7 @@
     "noEmit": true
   },
   "include": [
-    "src/**/*", "setup",
+    "src/**/*", "setup"
   ],
   "exclude": [
     "node_modules"

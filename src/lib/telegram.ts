@@ -10,7 +10,7 @@ class Telegram implements MyBot {
   readonly bot: TelegramBot
 
   constructor() {
-    this.bot = new TelegramBot(process.env.TELEGRAM_BOT_KEY!)
+    this.bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN!)
   }
 
   send(msg: string): Promise<TelegramBot.Message> {
