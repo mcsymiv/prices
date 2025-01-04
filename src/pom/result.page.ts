@@ -5,15 +5,15 @@ import { IProduct, Product } from '@components/item.component';
 interface IResult extends IBase {
   page: Page
 
-  header: Locator
-
+  header(name: string): Locator
+  open(url: string): Promise<void>
   products(itemNames: string[]): Promise<IProduct[]> 
 }
 
 class Result extends Base implements IResult {
 
-  get header(): Locator {
-    return this.page.getByRole('heading', { name: 'Пошук: Coca-Cola' })
+  header(name: string): Locator {
+    return this.page.getByRole('heading', { name })
   }
 
   async products(itemNames: string[]): Promise<IProduct[]> {
@@ -27,8 +27,8 @@ class Result extends Base implements IResult {
     return items
   }
 
-  async open(): Promise<void> {
-    await super.open('')
+  async open(url: string): Promise<void> {
+    await super.open(url)
   }
 }
 

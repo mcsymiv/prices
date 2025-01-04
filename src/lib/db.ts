@@ -43,9 +43,12 @@ class DB {
     try {
       for (const item of items) {
         await this.pool.query(`
-          INSERT INTO ${process.env.DB_TABLE_PRICE} (regular, promo, product_id, updated_at)
-          VALUES ($1, $2, (SELECT id FROM ${process.env.DB_TABLE_PRODUCT} WHERE name = $3), current_timestamp);
-        `, [item.regular, item.promo, item.name]
+          update ${process.env.DB_TABLE_PRICE} 
+          set regular = $1, promo = $2, updated_at = current_timestamp
+          from product
+          where price.product_id = product.id
+          and product.name = '${item.name}'
+        `, [item.regular, item.promo]
         )
       }
     } catch (error) {

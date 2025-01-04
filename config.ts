@@ -4,8 +4,7 @@ const waitTimeout: number = process.env.timeout ? Number(process.env.timeout) : 
 
 export const config = {
 
-  // testdrive paths
-  baseUrl: 'https://www.atbmarket.com/sch?page=1&lang=uk&query=Coca-Cola',
+  baseUrl: 'https://www.atbmarket.com/sch?page=1&lang=uk&query=',
 
   // timeouts
   timeout: process.env.testTimeout ? Number(process.env.testTimeout) : (1000 * 20),

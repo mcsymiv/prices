@@ -12,7 +12,7 @@ export function calculateDiff(
     diff = (price / newPrice) - 1
   }
 
-  return parseFloat(diff.toFixed(3))
+  return parseFloat(diff.toFixed(4))
 }
 
 export async function comparePrices(prev: Item[], next: Item[]): Promise<Item[]> {
@@ -72,7 +72,8 @@ export async function comparePrices(prev: Item[], next: Item[]): Promise<Item[]>
       // product regular price changed
 
       const diff: number = calculateDiff(newItems[name].regular, oldItems[name].regular)
-      await bot.send(`Продукт "${item.name}" змінив регулярну ціну на "${diff}". Попередня: ${oldItems[name].regular}. Тепер: ${newItems[name].regular}`)
+      const displayDiff: number = Math.abs(diff * 100)
+      await bot.send(`Продукт "${item.name}" змінив регулярну ціну на ${displayDiff}%. Попередня: ${oldItems[name].regular}. Тепер: ${newItems[name].regular}`)
       updatedPrices.push(item)
     } else if (oldItems[name].promo === 0 && newItems[name].promo !== 0) {
 
