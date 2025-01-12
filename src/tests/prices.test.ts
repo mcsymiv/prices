@@ -14,21 +14,42 @@ test.beforeAll('connect to db', async () => {
 })
 
 test('compare Coca-Cola prices', async ({ result }) => {
-  await result.open('Coca-Cola')
-  await expect(result.header('Пошук: Coca-Cola')).toBeVisible()
+  const name: string = 'Coca-Cola'
+  await result.open(name)
+  await expect(result.header(`Пошук: ${name}`)).toBeVisible()
 
   const productNames: string[] = await client.getProductsName()
-  const products: IProduct[] = await result.products(productNames)
+  const filteredProducts = productNames.filter(n => n.includes(name))
+  const products: IProduct[] = await result.products(filteredProducts)
 
   const collected: Item[] = await result.collect(products)
-
-  const saved = await client.getSavedProducts()
+  const saved: Item[] = await client.getSavedProducts(name)
 
   if (saved.every(p => p.regular === 0)) {
     await client.insertPrices(collected)
   } else {
     const newPrices: Item[] = await comparePrices(saved, collected)
-    await client.insertPrices(newPrices)
+    await client.updatePrices(newPrices)
+  }
+})
+
+test('compare Jaffa prices', async ({ result }) => {
+  const name: string = 'Jaffa'
+  await result.open(name)
+  await expect(result.header(`Пошук: ${name}`)).toBeVisible()
+
+  const productNames: string[] = await client.getProductsName()
+  const filteredProducts = productNames.filter(n => n.includes(name))
+  const products: IProduct[] = await result.products(filteredProducts)
+
+  const collected: Item[] = await result.collect(products)
+  const saved: Item[] = await client.getSavedProducts(name)
+
+  if (saved.every(p => p.regular === 0)) {
+    await client.insertPrices(collected)
+  } else {
+    const newPrices: Item[] = await comparePrices(saved, collected)
+    await client.updatePrices(newPrices)
   }
 })
 

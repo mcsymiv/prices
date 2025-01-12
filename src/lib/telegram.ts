@@ -14,10 +14,10 @@ class Telegram implements MyBot {
   }
 
   send(msg: string): Promise<TelegramBot.Message> {
-    const chatId: TelegramBot.ChatId = process.env.TELEGRAM_CHAT_ID!
+    // const chatId: TelegramBot.ChatId = process.env.TELEGRAM_CHAT_ID!
     const testChatId: TelegramBot.ChatId = process.env.TELEGRAM_CHAT_ID_TEST!
-    this.bot.sendMessage(testChatId, msg);
-    return this.bot.sendMessage(chatId, msg);
+    return this.bot.sendMessage(testChatId, msg);
+    // return this.bot.sendMessage(chatId, msg);
   }
 
   sendPhoto(imagePath: string): Promise<TelegramBot.Message> {

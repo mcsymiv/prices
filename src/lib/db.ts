@@ -39,15 +39,14 @@ class DB {
     return []
   }
 
-  async insertPrices(items: Item[]): Promise<void> {
+  async updatePrices(items: Item[]): Promise<void> {
     try {
       for (const item of items) {
         await this.pool.query(`
-          update ${process.env.DB_TABLE_PRICE} 
-          set regular = $1, promo = $2, updated_at = current_timestamp
-          from product
-          where price.product_id = product.id
-          and product.name = '${item.name}'
+          UPDATE ${process.env.DB_TABLE_PRICE} 
+          SET regular = $1, promo = $2, updated_at = current_timestamp
+          FROM product
+          WHERE price.product_id = product.id AND product.name = '${item.name}'
         `, [item.regular, item.promo]
         )
       }
@@ -56,13 +55,27 @@ class DB {
     }
   }
 
-  async getSavedProducts(): Promise<Item[]> {
+  async insertPrices(items: Item[]): Promise<void> {
+    try {
+      for (const item of items) {
+        await this.pool.query(`
+          INSERT INTO ${process.env.DB_TABLE_PRICE} (regular, promo, product_id, updated_at)
+          VALUES ($1, $2, (SELECT id FROM product WHERE name = '${item.name}'), current_timestamp);
+        `, [item.regular, item.promo]
+        )
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getSavedProducts(productName: string): Promise<Item[]> {
 
     try {
       const result = await this.pool.query(`
         SELECT p.name, pr.regular, pr.promo
         FROM product p
-        JOIN price pr ON p.id = pr.id;
+        JOIN price pr ON p.id = pr.id AND p.name LIKE '%' || '${productName}' || '%';
       `)
 
       const products = result.rows.map(row => ({
