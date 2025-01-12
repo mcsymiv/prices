@@ -63,7 +63,6 @@ export async function comparePrices(prev: Item[], next: Item[]): Promise<Item[]>
     } else if (oldItems[name].promo !== newItems[name].promo) {
       // product promo price changed
 
-      item.changed = true
       const diff: number = calculateDiff(newItems[name].promo, oldItems[name].regular)
       await bot.send(`Продукт "${item.name}" зайшов у промо: ${diff}. Попередня: ${oldItems[name].regular}. Тепер: ${newItems[name].promo}`)
       updatedPrices.push(item)

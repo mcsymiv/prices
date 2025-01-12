@@ -13,6 +13,20 @@ test.beforeAll('connect to db', async () => {
   await client.pool.connect();
 })
 
+test.skip('insert new product prices', async ({ result }) => {
+  const name: string = 'Jaffa'
+  await result.open(name)
+  await expect(result.header(`Пошук: ${name}`)).toBeVisible()
+
+  const productNames: string[] = await client.getProductsName()
+  const filteredProducts = productNames.filter(n => n.includes(name))
+  const products: IProduct[] = await result.products(filteredProducts)
+
+  const collected: Item[] = await result.collect(products)
+
+  await client.insertPrices(collected)
+})
+
 test('compare Coca-Cola prices', async ({ result }) => {
   const name: string = 'Coca-Cola'
   await result.open(name)
@@ -23,17 +37,14 @@ test('compare Coca-Cola prices', async ({ result }) => {
   const products: IProduct[] = await result.products(filteredProducts)
 
   const collected: Item[] = await result.collect(products)
-  const saved: Item[] = await client.getSavedProducts(name)
+  const saved: Item[] = await client.getSavedProducts()
+  const savedProducts = saved.filter(n => n.name.includes(name))
 
-  if (saved.every(p => p.regular === 0)) {
-    await client.insertPrices(collected)
-  } else {
-    const newPrices: Item[] = await comparePrices(saved, collected)
-    await client.updatePrices(newPrices)
-  }
+  const newPrices: Item[] = await comparePrices(savedProducts, collected)
+  await client.updatePrices(newPrices)
 })
 
-test('compare Jaffa prices', async ({ result }) => {
+test.only('compare Jaffa prices', async ({ result }) => {
   const name: string = 'Jaffa'
   await result.open(name)
   await expect(result.header(`Пошук: ${name}`)).toBeVisible()
@@ -43,14 +54,11 @@ test('compare Jaffa prices', async ({ result }) => {
   const products: IProduct[] = await result.products(filteredProducts)
 
   const collected: Item[] = await result.collect(products)
-  const saved: Item[] = await client.getSavedProducts(name)
+  const saved: Item[] = await client.getSavedProducts()
+  const savedProducts = saved.filter(n => n.name.includes(name))
 
-  if (saved.every(p => p.regular === 0)) {
-    await client.insertPrices(collected)
-  } else {
-    const newPrices: Item[] = await comparePrices(saved, collected)
-    await client.updatePrices(newPrices)
-  }
+  const newPrices: Item[] = await comparePrices(savedProducts, collected)
+  await client.updatePrices(newPrices)
 })
 
 test.afterAll('close db', async () => {

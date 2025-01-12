@@ -69,13 +69,13 @@ class DB {
     }
   }
 
-  async getSavedProducts(productName: string): Promise<Item[]> {
+  async getSavedProducts(): Promise<Item[]> {
 
     try {
       const result = await this.pool.query(`
         SELECT p.name, pr.regular, pr.promo
         FROM product p
-        JOIN price pr ON p.id = pr.id AND p.name LIKE '%' || '${productName}' || '%';
+        JOIN price pr ON p.id = pr.product_id;
       `)
 
       const products = result.rows.map(row => ({
